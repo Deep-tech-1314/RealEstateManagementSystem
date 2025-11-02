@@ -1,0 +1,261 @@
+﻿@model RealEstateManagementSystem.Models.User
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="fw-bold"><i class="fas fa-user-circle text-primary"></i> My Profile</h2>
+            <p class="text-muted">Manage your account information</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block mb-3">
+                        @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                        {
+                            <img src="@Model.ProfileImage" alt="@Model.FullName" class="profile-image-xl" id="profileImagePreview">
+                        }
+                        else
+                        {
+                            <div class="profile-image-xl bg-primary text-white d-flex align-items-center justify-content-center" id="profileImagePreview">
+                                <span style="font-size: 64px;">@Model.FullName.Substring(0, 1).ToUpper()</span>
+                            </div>
+                        }
+                        <label for="profileImageInput" class="position-absolute bottom-0 end-0 btn btn-primary btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                    </div>
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                    <p class="text-muted mb-3">@Model.Email</p>
+                    <span class="badge bg-success mb-3">
+                        <i class="fas fa-check-circle"></i> Active Account
+                    </span>
+                    <div class="text-start mt-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Member Since</span>
+                            <span class="fw-bold">@Model.CreatedAt.ToString("MMM yyyy")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Account Type</span>
+                            <span class="fw-bold">@Model.Role</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Status</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Quick Stats</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-calendar-check text-primary"></i> Bookings</span>
+                        <span class="badge bg-primary rounded-pill">@ViewBag.BookingsCount</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-envelope text-success"></i> Inquiries</span>
+                        <span class="badge bg-success rounded-pill">@ViewBag.InquiriesCount</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-heart text-danger"></i> Favorites</span>
+                        <span class="badge bg-danger rounded-pill">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-edit text-primary"></i> Edit Profile Information</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data" id="profileForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FullName" class="form-label fw-bold">
+                                    <i class="fas fa-user text-primary"></i> Full Name *
+                                </label>
+                                <input asp-for="FullName" class="form-control form-control-lg" required>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label fw-bold">
+                                    <i class="fas fa-envelope text-primary"></i> Email Address *
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control form-control-lg" readonly>
+                                <small class="text-muted">Email cannot be changed</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">
+                                    <i class="fas fa-phone text-primary"></i> Phone Number
+                                </label>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg"
+                                       placeholder="+91 1234567890">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label fw-bold">
+                                    <i class="fas fa-city text-primary"></i> City
+                                </label>
+                                <input asp-for="City" class="form-control form-control-lg" placeholder="Enter your city">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="State" class="form-label fw-bold">
+                                    <i class="fas fa-map text-primary"></i> State
+                                </label>
+                                <input asp-for="State" class="form-control form-control-lg" placeholder="Enter your state">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ZipCode" class="form-label fw-bold">
+                                    <i class="fas fa-mail-bulk text-primary"></i> Zip Code
+                                </label>
+                                <input asp-for="ZipCode" class="form-control form-control-lg" placeholder="123456">
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label asp-for="Address" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt text-primary"></i> Address
+                                </label>
+                                <textarea asp-for="Address" class="form-control" rows="3"
+                                          placeholder="Enter your full address"></textarea>
+                            </div>
+
+                            <input type="file" name="profileImage" id="profileImageFile" style="display: none;">
+
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                                <a asp-action="Dashboard" class="btn btn-outline-secondary btn-lg px-5">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password Card -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-warning text-dark border-0">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-key"></i> Change Password</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form id="changePasswordForm">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required minlength="6">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-lock"></i> Change Password
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Image Preview
+        document.getElementById('profileImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('profileImagePreview');
+                    preview.innerHTML = '<img src="' + e.target.result + '" class="profile-image-xl" alt="Profile">';
+                };
+                reader.readAsDataURL(file);
+
+                // Set the file to the hidden input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('profileImageFile').files = dataTransfer.files;
+            }
+        });
+
+        // Change Password
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            fetch('/User/ChangePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    document.getElementById('changePasswordForm').reset();
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .profile-image-xl {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+</style>

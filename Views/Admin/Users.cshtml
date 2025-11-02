@@ -1,0 +1,277 @@
+﻿@model IEnumerable<RealEstateManagementSystem.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold"><i class="fas fa-users text-primary"></i> Manage Users</h2>
+            <p class="text-muted">View and manage all registered users</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="btn-group">
+                <button class="btn btn-outline-success active" data-filter="all">All Users (@Model.Count())</button>
+                <button class="btn btn-outline-primary" data-filter="true">Active (@Model.Count(u => u.IsActive))</button>
+                <button class="btn btn-outline-danger" data-filter="false">Inactive (@Model.Count(u => !u.IsActive))</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6>Total Users</h6>
+                    <h2 class="mb-0">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Active Users</h6>
+                    <h2 class="mb-0">@Model.Count(u => u.IsActive)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6>Inactive Users</h6>
+                    <h2 class="mb-0">@Model.Count(u => !u.IsActive)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6>New This Month</h6>
+                    <h2 class="mb-0">@Model.Count(u => u.CreatedAt.Month == DateTime.Now.Month)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Grid -->
+    <div class="row">
+        @foreach (var user in Model.OrderByDescending(u => u.CreatedAt))
+        {
+            <div class="col-lg-4 col-md-6 mb-4 user-item" data-active="@user.IsActive.ToString().ToLower()">
+                <div class="card user-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="position-relative">
+                                @if (!string.IsNullOrEmpty(user.ProfileImage))
+                                {
+                                    <img src="@user.ProfileImage" alt="@user.FullName" class="user-profile-img">
+                                }
+                                else
+                                {
+                                    <div class="user-profile-img bg-primary text-white d-flex align-items-center justify-content-center">
+                                        <span style="font-size: 24px;">@user.FullName.Substring(0, 1).ToUpper()</span>
+                                    </div>
+                                }
+                                <span class="position-absolute bottom-0 end-0 badge rounded-circle @(user.IsActive ? "bg-success" : "bg-danger") p-2">
+                                    <i class="fas @(user.IsActive ? "fa-check" : "fa-times")"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="fw-bold mb-1">@user.FullName</h5>
+                                <p class="text-muted small mb-1">
+                                    <i class="fas fa-envelope"></i> @user.Email
+                                </p>
+                                @if (!string.IsNullOrEmpty(user.PhoneNumber))
+                                {
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-phone"></i> @user.PhoneNumber
+                                    </p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Joined</small>
+                                <strong>@user.CreatedAt.ToString("MMM yyyy")</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Status</small>
+                                <span class="badge bg-@(user.IsActive ? "success" : "danger")">
+                                    @(user.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(user.City))
+                        {
+                            <p class="small mb-2">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                @user.City@(string.IsNullOrEmpty(user.State) ? "" : ", " + user.State)
+                            </p>
+                        }
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-outline-info" onclick="viewUserDetails(@user.UserId, '@user.FullName', '@user.Email', '@user.PhoneNumber', '@user.City', '@user.State', '@user.Address', '@user.CreatedAt.ToString("MMMM dd, yyyy")', @user.IsActive.ToString().ToLower())">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-@(user.IsActive ? "danger" : "success")" onclick="toggleUserStatus(@user.UserId)">
+                                    <i class="fas fa-@(user.IsActive ? "ban" : "check")"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-user"></i> User Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Full Name</label>
+                        <p id="modalFullName" class="fs-5"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Email Address</label>
+                        <p id="modalEmail"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Phone Number</label>
+                        <p id="modalPhone"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Member Since</label>
+                        <p id="modalJoined"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">City</label>
+                        <p id="modalCity"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">State</label>
+                        <p id="modalState"></p>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-bold text-muted">Address</label>
+                        <p id="modalAddress"></p>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-bold text-muted">Account Status</label>
+                        <p><span id="modalStatus"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="modalUserId">
+                <button class="btn btn-danger" onclick="toggleUserStatusFromModal()">
+                    <i class="fas fa-ban"></i> Toggle Status
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Filter functionality
+        document.querySelectorAll('[data-filter]').forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.user-item').forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-active') === filter) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        function viewUserDetails(id, name, email, phone, city, state, address, joined, isActive) {
+            document.getElementById('modalUserId').value = id;
+            document.getElementById('modalFullName').textContent = name;
+            document.getElementById('modalEmail').textContent = email;
+            document.getElementById('modalPhone').textContent = phone || 'Not provided';
+            document.getElementById('modalCity').textContent = city || 'Not provided';
+            document.getElementById('modalState').textContent = state || 'Not provided';
+            document.getElementById('modalAddress').textContent = address || 'Not provided';
+            document.getElementById('modalJoined').textContent = joined;
+
+            const statusBadge = document.getElementById('modalStatus');
+            statusBadge.className = 'badge bg-' + (isActive ? 'success' : 'danger');
+            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        }
+
+        function toggleUserStatus(userId) {
+            if (confirm('Are you sure you want to toggle this user\'s status?')) {
+                updateUserStatus(userId);
+            }
+        }
+
+        function toggleUserStatusFromModal() {
+            const userId = document.getElementById('modalUserId').value;
+            updateUserStatus(userId);
+        }
+
+        function updateUserStatus(userId) {
+            fetch('/Admin/ToggleUserStatus/' + userId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User status updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to update user status');
+                }
+            });
+        }
+    </script>
+}
+
+<style>
+    .user-card {
+        transition: all 0.3s ease;
+        border-top: 3px solid transparent;
+    }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+            border-top-color: #0d6efd;
+        }
+
+    .user-profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+</style>

@@ -1,0 +1,474 @@
+@model IEnumerable<RealEstateManagementSystem.Models.Property>
+@using RealEstateManagementSystem.Services
+@{
+    ViewData["Title"] = "Manage Properties";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Manage Properties</h2>
+        <div>
+            <a asp-action="CreateProperty" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Add New Property
+            </a>
+            <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#filterModal">
+                <i class="fas fa-filter me-2"></i>Filter
+            </button>
+        </div>
+    </div>
+    
+    <!-- Property Stats Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Total Properties</h6>
+                            <h3 class="mb-0">@Model.Count()</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-home fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Active Listings</h6>
+                            <h3 class="mb-0">@Model.Count(p => p.Status == "Active")</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-check-circle fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Featured Properties</h6>
+                            <h3 class="mb-0">@Model.Count(p => p.IsFeatured)</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-star fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Pending Review</h6>
+                            <h3 class="mb-0">@Model.Count(p => p.Status == "Pending")</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="btn-group" role="group">
+                <button class="btn btn-outline-primary active" data-filter="all">
+                    All (@Model.Count())
+                </button>
+                <button class="btn btn-outline-success" data-filter="Available">
+                    Available (@Model.Count(p => p.Status == "Available"))
+                </button>
+                <button class="btn btn-outline-warning" data-filter="Featured">
+                    Featured (@Model.Count(p => p.IsFeatured))
+                </button>
+                <button class="btn btn-outline-danger" data-filter="Sold">
+                    Sold (@Model.Count(p => p.Status == "Sold"))
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search properties...">
+        </div>
+    </div>
+
+    <!-- Property Type Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-secondary active" data-type="all">All Types</button>
+                <button class="btn btn-sm btn-outline-primary" data-type="House">
+                    <i class="fas fa-home"></i> Houses (@Model.Count(p => p.PropertyType == "House"))
+                </button>
+                <button class="btn btn-sm btn-outline-info" data-type="Apartment">
+                    <i class="fas fa-building"></i> Apartments (@Model.Count(p => p.PropertyType == "Apartment"))
+                </button>
+                <button class="btn btn-sm btn-outline-warning" data-type="Villa">
+                    <i class="fas fa-crown"></i> Villas (@Model.Count(p => p.PropertyType == "Villa"))
+                </button>
+                <button class="btn btn-sm btn-outline-success" data-type="Commercial">
+                    <i class="fas fa-briefcase"></i> Commercial (@Model.Count(p => p.PropertyType == "Commercial"))
+                </button>
+                <button class="btn btn-sm btn-outline-danger" data-type="Land">
+                    <i class="fas fa-map"></i> Land (@Model.Count(p => p.PropertyType == "Land"))
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="row" id="propertiesGrid">
+        @foreach (var property in Model.OrderByDescending(p => p.CreatedAt))
+        {
+            <div class="col-lg-4 col-md-6 mb-4 property-item"
+                 data-status="@property.Status"
+                 data-type="@property.PropertyType"
+                 data-featured="@property.IsFeatured.ToString().ToLower()"
+                 data-search="@property.Title.ToLower() @property.City.ToLower() @property.PropertyType.ToLower()">
+                <div class="card property-admin-card h-100 shadow-sm">
+                    <div class="property-image-wrapper">
+                        @if (!string.IsNullOrEmpty(property.MainImage))
+                        {
+                            <img src="@property.MainImage" class="card-img-top property-admin-image" alt="@property.Title">
+                        }
+                        else
+                        {
+                            <div class="property-admin-placeholder">
+                                <i class="fas fa-home fa-3x text-muted"></i>
+                            </div>
+                        }
+                        @if (property.IsFeatured)
+                        {
+                            <span class="badge bg-warning position-absolute m-2">
+                                <i class="fas fa-star"></i> Featured
+                            </span>
+                        }
+                        <span class="badge bg-@(property.Status == "Available" ? "success" : property.Status == "Sold" ? "danger" : "warning") position-absolute m-2" style="top: 40px;">
+                            @property.Status
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">@property.Title</h5>
+                            <span class="badge bg-secondary">@property.PropertyType</span>
+                        </div>
+                        <p class="text-muted small mb-2">
+                            <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                        </p>
+                        <h4 class="text-primary fw-bold mb-2">
+                            @CurrencyService.ConvertAndFormatPrice(property.Price)
+                            @if (property.ListingType == "Rent")
+                            {
+                                <small class="text-muted">/month</small>
+                            }
+                        </h4>
+                        <div class="d-flex justify-content-between text-muted small mb-3">
+                            @if (property.Bedrooms.HasValue)
+                            {
+                                <span><i class="fas fa-bed"></i> @property.Bedrooms BD</span>
+                            }
+                            @if (property.Bathrooms.HasValue)
+                            {
+                                <span><i class="fas fa-bath"></i> @property.Bathrooms BA</span>
+                            }
+                            @if (property.SquareFeet.HasValue)
+                            {
+                                <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                            }
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-eye"></i> @property.ViewCount views |
+                                <i class="far fa-clock"></i> @property.CreatedAt.ToString("MMM dd, yyyy")
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="d-grid gap-2">
+                            <div class="btn-group">
+                                <a asp-action="EditProperty" asp-route-id="@property.PropertyId"
+                                   class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Property">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                   class="btn btn-info btn-sm" target="_blank" data-bs-toggle="tooltip" title="View Property">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProperty(@property.PropertyId)" data-bs-toggle="tooltip" title="Delete Property">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                            <div class="btn-group mt-2">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="updatePropertyStatus(@property.PropertyId, 'Available')">
+                                    <i class="fas fa-undo"></i> Mark Available
+                                </button>
+                                <button class="btn btn-outline-warning btn-sm" onclick="updatePropertyStatus(@property.PropertyId, 'Pending')">
+                                    <i class="fas fa-hourglass-half"></i> Mark Pending
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="updatePropertyStatus(@property.PropertyId, 'Cancelled')">
+                                    <i class="fas fa-ban"></i> Cancel
+                                </button>
+                                <button class="btn btn-outline-success btn-sm" onclick="updatePropertyStatus(@property.PropertyId, 'Sold')">
+                                    <i class="fas fa-check-circle"></i> Sold
+                                </button>
+                            </div>
+                            <button class="btn btn-sm btn-outline-@(property.IsFeatured ? "warning" : "secondary")"
+                                    onclick="toggleFeatured(@property.PropertyId, @property.IsFeatured.ToString().ToLower())" data-bs-toggle="tooltip" title="@(property.IsFeatured ? "Remove from featured" : "Add to featured")">
+                                <i class="fas fa-star"></i> @(property.IsFeatured ? "Remove Featured" : "Make Featured")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-home fa-4x text-muted mb-3"></i>
+            <h4>No properties yet</h4>
+            <a asp-action="CreateProperty" class="btn btn-primary btn-lg mt-3">
+                <i class="fas fa-plus"></i> Add Your First Property
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Delete property function
+        function deleteProperty(id) {
+            if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+                window.location.href = '@Url.Action("DeleteProperty", "Admin")/' + id;
+            }
+        }
+        
+        // Update property status function
+        function updatePropertyStatus(id, status) {
+            if (status === 'Cancelled') {
+                if (confirm('Are you sure you want to cancel this property?')) {
+                    window.location.href = '@Url.Action("CancelProperty", "Admin")/' + id;
+                }
+            } else {
+                // For other status updates, you can implement similar functionality
+                alert('Status update to ' + status + ' is not implemented yet.');
+            }
+        }
+        
+        // Toggle featured status
+        function toggleFeatured(id, isFeatured) {
+            // Implement featured toggle functionality
+            alert('Feature toggle functionality is not implemented yet.');
+        }
+        
+        // Filter properties by status
+        $(document).ready(function() {
+            // Search functionality
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".property-item").filter(function() {
+                    $(this).toggle($(this).data("search").indexOf(value) > -1);
+                });
+            });
+            
+            // Status filter
+            $("[data-filter]").click(function() {
+                var filter = $(this).data("filter");
+                
+                // Update active button
+                $("[data-filter]").removeClass("active");
+                $(this).addClass("active");
+                
+                if (filter === "all") {
+                    $(".property-item").show();
+                } else if (filter === "Featured") {
+                    $(".property-item").hide();
+                    $(".property-item[data-featured='true']").show();
+                } else {
+                    $(".property-item").hide();
+                    $(".property-item[data-status='" + filter + "']").show();
+                }
+            });
+            
+            // Property type filter
+            $("[data-type]").click(function() {
+                var type = $(this).data("type");
+                
+                // Update active button
+                $("[data-type]").removeClass("active");
+                $(this).addClass("active");
+                
+                if (type === "all") {
+                    $(".property-item").show();
+                } else {
+                    $(".property-item").hide();
+                    $(".property-item[data-type='" + type + "']").show();
+                }
+            });
+        });
+    </script>
+    <script>
+        // Status Filter
+        document.querySelectorAll('[data-filter]').forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                filterProperties();
+            });
+        });
+
+        // Type Filter
+        document.querySelectorAll('[data-type]').forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+
+                document.querySelectorAll('[data-type]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                filterProperties();
+            });
+        });
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterProperties();
+        });
+
+        function filterProperties() {
+            const statusFilter = document.querySelector('[data-filter].active').getAttribute('data-filter');
+            const typeFilter = document.querySelector('[data-type].active').getAttribute('data-type');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            document.querySelectorAll('.property-item').forEach(item => {
+                const status = item.getAttribute('data-status');
+                const type = item.getAttribute('data-type');
+                const featured = item.getAttribute('data-featured');
+                const searchData = item.getAttribute('data-search');
+
+                let showStatus = statusFilter === 'all' ||
+                                status === statusFilter ||
+                                (statusFilter === 'Featured' && featured === 'true');
+                let showType = typeFilter === 'all' || type === typeFilter;
+                let showSearch = searchTerm === '' || searchData.includes(searchTerm);
+
+                if (showStatus && showType && showSearch) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function deleteProperty(id) {
+    if (confirm('Are you sure you want to delete this property? This cannot be undone!')) {
+        fetch('/Admin/DeletePropertyAjax/' + id, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Property deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to delete property');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+
+        function toggleFeatured(id, isFeatured) {
+            const action = isFeatured ? 'remove from' : 'add to';
+            if (confirm(`Are you sure you want to ${action} featured properties?`)) {
+                fetch('/Admin/ToggleFeatured/' + id, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Featured status updated!');
+                        location.reload();
+                    } else {
+                        alert('Failed to update');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+
+        function updatePropertyStatus(id, status) {
+            fetch('/Admin/UpdatePropertyStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, status: status })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Property status updated');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to update property status');
+                }
+            })
+            .catch(() => alert('Failed to update property status'));
+        }
+    </script>
+}
+
+<style>
+    .property-admin-card {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .property-admin-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+        }
+
+    .property-image-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .property-admin-image {
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .property-admin-card:hover .property-admin-image {
+        transform: scale(1.1);
+    }
+
+    .property-admin-placeholder {
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

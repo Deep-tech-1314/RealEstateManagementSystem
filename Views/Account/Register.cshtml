@@ -1,0 +1,413 @@
+﻿@model RealEstateManagementSystem.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!-- Hero Section -->
+<section class="register-hero">
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="row align-items-center">
+                        <!-- Left Side - Benefits -->
+                        <div class="col-lg-6 text-white mb-4 mb-lg-0">
+                            <h1 class="display-4 fw-bold mb-4">Join RealEstate Pro</h1>
+                            <p class="lead mb-4">Create your account and unlock access to thousands of properties</p>
+
+                            <div class="benefits-list">
+                                <div class="benefit-item mb-3">
+                                    <i class="fas fa-check-circle fa-2x text-success me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Access Premium Properties</h5>
+                                        <p class="mb-0 small">Browse exclusive listings not available elsewhere</p>
+                                    </div>
+                                </div>
+                                <div class="benefit-item mb-3">
+                                    <i class="fas fa-bookmark fa-2x text-warning me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Save Your Favorites</h5>
+                                        <p class="mb-0 small">Create your wishlist and track properties</p>
+                                    </div>
+                                </div>
+                                <div class="benefit-item mb-3">
+                                    <i class="fas fa-calendar-check fa-2x text-info me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Easy Booking</h5>
+                                        <p class="mb-0 small">Schedule property visits with one click</p>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-headset fa-2x text-danger me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">24/7 Support</h5>
+                                        <p class="mb-0 small">Get assistance whenever you need it</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side - Registration Form -->
+                        <div class="col-lg-6">
+                            <div class="card register-card shadow-lg border-0">
+                                <div class="card-body p-4 p-md-5">
+                                    <div class="text-center mb-4">
+                                        <div class="register-icon mb-3">
+                                            <i class="fas fa-user-plus fa-3x text-primary"></i>
+                                        </div>
+                                        <h3 class="fw-bold">Create Account</h3>
+                                        <p class="text-muted">Fill in your details to get started</p>
+                                    </div>
+
+                                    <form asp-action="Register" method="post" id="registerForm">
+                                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="FullName" class="form-label fw-bold">
+                                                <i class="fas fa-user text-primary"></i> Full Name *
+                                            </label>
+                                            <input asp-for="FullName" class="form-control form-control-lg"
+                                                   placeholder="Enter your full name" autofocus>
+                                            <span asp-validation-for="FullName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="Email" class="form-label fw-bold">
+                                                <i class="fas fa-envelope text-primary"></i> Email Address *
+                                            </label>
+                                            <input asp-for="Email" type="email" class="form-control form-control-lg"
+                                                   placeholder="your.email@example.com">
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="PhoneNumber" class="form-label fw-bold">
+                                                <i class="fas fa-phone text-primary"></i> Phone Number
+                                            </label>
+                                            <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg"
+                                                   placeholder="+91 1234567890">
+                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="Password" class="form-label fw-bold">
+                                                <i class="fas fa-lock text-primary"></i> Password *
+                                            </label>
+                                            <div class="input-group">
+                                                <input asp-for="Password" type="password" class="form-control form-control-lg"
+                                                       id="password" placeholder="Minimum 6 characters">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                            <div class="password-strength mt-2">
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar" id="passwordStrength" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted" id="strengthText"></small>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="ConfirmPassword" class="form-label fw-bold">
+                                                <i class="fas fa-lock text-primary"></i> Confirm Password *
+                                            </label>
+                                            <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg"
+                                                   placeholder="Re-enter your password">
+                                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="terms" required>
+                                            <label class="form-check-label" for="terms">
+                                                I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and
+                                                <a href="#" class="text-primary">Privacy Policy</a>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                            <i class="fas fa-user-plus"></i> Create Account
+                                        </button>
+
+                                        <div class="text-center">
+                                            <p class="mb-0">
+                                                Already have an account?
+                                                <a asp-action="Login" class="text-primary fw-bold">Login here</a>
+                                            </p>
+                                        </div>
+                                    </form>
+
+                                    <div class="divider my-4">
+                                        <span class="divider-text">OR</span>
+                                    </div>
+
+                                    <div class="social-register">
+                                        <button class="btn btn-outline-danger w-100 mb-2">
+                                            <i class="fab fa-google"></i> Continue with Google
+                                        </button>
+                                        <button class="btn btn-outline-primary w-100">
+                                            <i class="fab fa-facebook-f"></i> Continue with Facebook
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Indicators -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Secure Registration</h5>
+                    <p class="text-muted small">Your data is encrypted and protected</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="trust-badge">
+                    <i class="fas fa-lock fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold">Privacy First</h5>
+                    <p class="text-muted small">We never share your information</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="trust-badge">
+                    <i class="fas fa-envelope-open-text fa-3x text-warning mb-3"></i>
+                    <h5 class="fw-bold">No Spam</h5>
+                    <p class="text-muted small">Only relevant property updates</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="trust-badge">
+                    <i class="fas fa-clock fa-3x text-info mb-3"></i>
+                    <h5 class="fw-bold">Quick Setup</h5>
+                    <p class="text-muted small">Start browsing in 30 seconds</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Why Register With Us?</h2>
+            <p class="lead text-muted">Enjoy exclusive benefits as a registered member</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon-lg bg-primary text-white mb-3">
+                        <i class="fas fa-search-plus fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Advanced Search</h4>
+                    <p class="text-muted">
+                        Use powerful filters to find exactly what you're looking for. Save searches and get instant alerts.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon-lg bg-success text-white mb-3">
+                        <i class="fas fa-bell fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Instant Alerts</h4>
+                    <p class="text-muted">
+                        Get notified when new properties matching your criteria are listed. Never miss an opportunity.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon-lg bg-warning text-white mb-3">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Market Insights</h4>
+                    <p class="text-muted">
+                        Access detailed market trends, property valuations, and investment analysis tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Password Toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Password Strength Meter
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+            if (password.length >= 6) strength += 25;
+            if (password.match(/[a-z]+/)) strength += 25;
+            if (password.match(/[A-Z]+/)) strength += 25;
+            if (password.match(/[0-9]+/)) strength += 25;
+
+            strengthBar.style.width = strength + '%';
+
+            if (strength <= 25) {
+                strengthBar.className = 'progress-bar bg-danger';
+                strengthText.textContent = 'Weak';
+                strengthText.className = 'text-danger';
+            } else if (strength <= 50) {
+                strengthBar.className = 'progress-bar bg-warning';
+                strengthText.textContent = 'Fair';
+                strengthText.className = 'text-warning';
+            } else if (strength <= 75) {
+                strengthBar.className = 'progress-bar bg-info';
+                strengthText.textContent = 'Good';
+                strengthText.className = 'text-info';
+            } else {
+                strengthBar.className = 'progress-bar bg-success';
+                strengthText.textContent = 'Strong';
+                strengthText.className = 'text-success';
+            }
+        });
+
+        // Form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            button.disabled = true;
+        });
+    </script>
+}
+
+<style>
+    .register-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 50px 0;
+    }
+
+    .register-card {
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        background: white;
+    }
+
+    .register-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+        .register-icon i {
+            color: white !important;
+        }
+
+    .benefit-item {
+        display: flex;
+        align-items: start;
+        animation: slideInLeft 0.5s ease-out;
+    }
+
+
+    .divider {
+        position: relative;
+        text-align: center;
+    }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+    .divider-text {
+        background: white;
+        padding: 0 15px;
+        position: relative;
+        color: #6c757d;
+        font-weight: bold;
+    }
+
+    .trust-badge {
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .trust-badge:hover {
+            transform: translateY(-5px);
+        }
+
+    .feature-card {
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+    .feature-icon-lg {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+</style>

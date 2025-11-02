@@ -1,0 +1,492 @@
+﻿@model RealEstateManagementSystem.Models.User
+@{
+    ViewData["Title"] = "User Dashboard";
+    var recentBookings = ViewBag.RecentBookings as List<RealEstateManagementSystem.Models.Booking>;
+    var recentInquiries = ViewBag.RecentInquiries as List<RealEstateManagementSystem.Models.Inquiry>;
+}
+
+<div class="container-fluid mt-4 mb-5">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="welcome-banner">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold text-white mb-2">
+                            <i class="fas fa-hand-wave text-warning"></i> Welcome back, @Model.FullName!
+                        </h2>
+                        <p class="text-white-50 mb-0">Here's what's happening with your account today</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="badge bg-success fs-6">
+                            <i class="fas fa-check-circle"></i> Active Member
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards (Dynamic) -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card dashboard-card booking-card">
+                <div class="card-body text-white position-relative">
+                    <div class="dashboard-bg-image booking-bg"></div>
+                    <div class="position-relative">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 opacity-75">My Bookings</h6>
+                                <h2 class="mb-0 fw-bold">@(ViewBag.BookingsCount ?? 0)</h2>
+                                <small class="opacity-75">
+                                    @(ViewBag.PendingBookings ?? 0) Pending
+                                </small>
+                            </div>
+                            <div class="dashboard-icon bg-white bg-opacity-25">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a asp-action="MyBookings" class="btn btn-light btn-sm">
+                                View All <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card dashboard-card inquiry-card">
+                <div class="card-body text-white position-relative">
+                    <div class="dashboard-bg-image inquiry-bg"></div>
+                    <div class="position-relative">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 opacity-75">My Inquiries</h6>
+                                <h2 class="mb-0 fw-bold">@(ViewBag.InquiriesCount ?? 0)</h2>
+                                <small class="opacity-75">
+                                    @(ViewBag.RepliedInquiries ?? 0) Replied
+                                </small>
+                            </div>
+                            <div class="dashboard-icon bg-white bg-opacity-25">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a asp-action="MyInquiries" class="btn btn-light btn-sm">
+                                View All <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card dashboard-card saved-card">
+                <div class="card-body text-white position-relative">
+                    <div class="dashboard-bg-image saved-bg"></div>
+                    <div class="position-relative">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 opacity-75">Saved Properties</h6>
+                                <h2 class="mb-0 fw-bold">@(ViewBag.SavedProperties ?? 0)</h2>
+                                <small class="opacity-75">
+                                    In your wishlist
+                                </small>
+                            </div>
+                            <div class="dashboard-icon bg-white bg-opacity-25">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a asp-controller="Home" asp-action="Properties" class="btn btn-light btn-sm">
+                                Browse More <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8 mb-4">
+            <!-- Recent Bookings -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-calendar-alt text-primary"></i> Recent Bookings
+                        </h5>
+                        <a asp-action="MyBookings" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (recentBookings != null && recentBookings.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Property</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var booking in recentBookings)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(booking.Property.MainImage))
+                                                    {
+                                                        <img src="@booking.Property.MainImage" alt="Property"
+                                                             class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center"
+                                                             style="width: 50px; height: 50px;">
+                                                            <i class="fas fa-home text-muted"></i>
+                                                        </div>
+                                                    }
+                                                    <div>
+                                                        <div class="fw-bold small">@booking.Property.Title</div>
+                                                        <small class="text-muted">@booking.Property.City</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@booking.BookingDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@booking.BookingTime</td>
+                                            <td>
+                                                <span class="badge bg-@(booking.Status == "Confirmed" ? "success" : booking.Status == "Pending" ? "warning" : booking.Status == "Cancelled" ? "danger" : "info")">
+                                                    @booking.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Home" asp-action="PropertyDetails"
+                                                   asp-route-id="@booking.PropertyId"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No bookings yet</p>
+                            <a asp-controller="Home" asp-action="Properties" class="btn btn-primary">
+                                Browse Properties
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Inquiries -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-comments text-success"></i> Recent Inquiries
+                        </h5>
+                        <a asp-action="MyInquiries" class="btn btn-sm btn-outline-success">View All</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (recentInquiries != null && recentInquiries.Any())
+                    {
+                        @foreach (var inquiry in recentInquiries)
+                        {
+                            <div class="inquiry-item mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        @if (inquiry.Property != null)
+                                        {
+                                            <h6 class="fw-bold mb-1">@inquiry.Property.Title</h6>
+                                        }
+                                        else
+                                        {
+                                            <h6 class="fw-bold mb-1">General Inquiry</h6>
+                                        }
+                                        <small class="text-muted">
+                                            <i class="far fa-clock"></i> @inquiry.CreatedAt.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-@(inquiry.Status == "Replied" ? "success" : inquiry.Status == "Read" ? "info" : "secondary")">
+                                        @inquiry.Status
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-2">@inquiry.Message</p>
+                                @if (!string.IsNullOrEmpty(inquiry.AdminReply))
+                                {
+                                    <div class="alert alert-success small mb-0">
+                                        <strong><i class="fas fa-reply"></i> Admin Reply:</strong><br>
+                                        @inquiry.AdminReply
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No inquiries yet</p>
+                            <a asp-controller="Home" asp-action="Contact" class="btn btn-success">
+                                Contact Us
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Profile Card -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block mb-3">
+                        @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                        {
+                            <img src="@Model.ProfileImage" alt="@Model.FullName" class="profile-image-large">
+                        }
+                        else
+                        {
+                            <div class="profile-image-large bg-primary text-white d-flex align-items-center justify-content-center">
+                                <span style="font-size: 48px;">@Model.FullName.Substring(0, 1).ToUpper()</span>
+                            </div>
+                        }
+                        <span class="position-absolute bottom-0 end-0 badge bg-success rounded-circle p-2">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </div>
+                    <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                    <p class="text-muted mb-3">@Model.Email</p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="Profile" class="btn btn-primary">
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        </a>
+                        <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Account Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Phone Number</small>
+                        <span class="fw-bold">@(Model.PhoneNumber ?? "Not provided")</span>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Member Since</small>
+                        <span class="fw-bold">@Model.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Location</small>
+                        <span class="fw-bold">
+                            @if (!string.IsNullOrEmpty(Model.City))
+                            {
+                                @Model.City
+                                if (!string.IsNullOrEmpty(Model.State))
+                                {
+                                    <text>, @Model.State</text>
+                                }
+                            }
+                            else
+                            {
+                                <text>Not provided</text>
+                            }
+                        </span>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Account Status</small>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-bolt text-warning"></i> Quick Actions</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a asp-controller="Home" asp-action="Properties" class="list-group-item list-group-item-action">
+                        <i class="fas fa-search text-primary"></i> Browse Properties
+                    </a>
+                    <a asp-action="MyBookings" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar text-success"></i> My Bookings
+                    </a>
+                    <a asp-action="MyInquiries" class="list-group-item list-group-item-action">
+                        <i class="fas fa-envelope text-info"></i> My Inquiries
+                    </a>
+                    <a asp-controller="Home" asp-action="Contact" class="list-group-item list-group-item-action">
+                        <i class="fas fa-headset text-warning"></i> Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-key"></i> Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            fetch('/User/ChangePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .welcome-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .profile-image-large {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #fff;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .inquiry-item {
+        transition: all 0.3s ease;
+    }
+
+    .inquiry-item:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: translateX(5px);
+    }
+
+    /* Enhanced Dashboard Cards */
+    .dashboard-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 200px;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .dashboard-bg-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: 1;
+    }
+
+    .booking-bg {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=200&auto=format&fit=crop') center/cover;
+    }
+
+    .inquiry-bg {
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.9) 0%, rgba(245, 87, 108, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1560184897-ae75f418493e?w=400&h=200&auto=format&fit=crop') center/cover;
+    }
+
+    .saved-bg {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=200&auto=format&fit=crop') center/cover;
+    }
+
+    .dashboard-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+</style>

@@ -1,0 +1,339 @@
+@model IEnumerable<RealEstateManagementSystem.Models.Booking>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-banner-admin">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold text-white mb-2">
+                            <i class="fas fa-shield-alt"></i> Admin Control Panel
+                        </h2>
+                        <p class="text-white-50 mb-0">Welcome back, @Context.Session.GetString("UserName")! Manage your entire platform</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="text-white">
+                            <i class="far fa-clock"></i> @DateTime.Now.ToString("MMMM dd, yyyy - hh:mm tt")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card admin-stat-card bg-gradient-primary text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Total Users</h6>
+                            <h2 class="fw-bold mb-0">@ViewBag.TotalUsers</h2>
+                            <small>+@ViewBag.NewUsersThisMonth new this month</small>
+                        </div>
+                        <div class="admin-icon">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-controller="Admin" asp-action="Users" class="btn btn-light btn-sm">Manage Users</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card admin-stat-card bg-gradient-success text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Total Properties</h6>
+                            <h2 class="fw-bold mb-0">@ViewBag.TotalProperties</h2>
+                            <small>@ViewBag.AvailableProperties available</small>
+                        </div>
+                        <div class="admin-icon">
+                            <i class="fas fa-home fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-action="Properties" class="btn btn-light btn-sm">Manage Properties</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card admin-stat-card bg-gradient-warning text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Total Bookings</h6>
+                            <h2 class="fw-bold mb-0">@ViewBag.TotalBookings</h2>
+                            <small>@ViewBag.PendingBookings pending approval</small>
+                        </div>
+                        <div class="admin-icon">
+                            <i class="fas fa-calendar-check fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-action="Bookings" class="btn btn-light btn-sm">Manage Bookings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card admin-stat-card bg-gradient-info text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-1">Total Inquiries</h6>
+                            <h2 class="fw-bold mb-0">@ViewBag.TotalInquiries</h2>
+                            <small>@ViewBag.NewInquiries new inquiries</small>
+                        </div>
+                        <div class="admin-icon">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-action="Inquiries" class="btn btn-light btn-sm">Manage Inquiries</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bolt text-warning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="CreateProperty" class="quick-action-btn">
+                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                <p class="mb-0 fw-bold">Add Property</p>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Properties" class="quick-action-btn">
+                                <i class="fas fa-list fa-2x mb-2"></i>
+                                <p class="mb-0 fw-bold">View All Properties</p>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Bookings" class="quick-action-btn">
+                                <i class="fas fa-calendar-alt fa-2x mb-2"></i>
+                                <p class="mb-0 fw-bold">Approve Bookings</p>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Inquiries" class="quick-action-btn">
+                                <i class="fas fa-reply fa-2x mb-2"></i>
+                                <p class="mb-0 fw-bold">Reply Inquiries</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Analytics -->
+    <div class="row">
+        <!-- Recent Bookings -->
+        <div class="col-xl-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-clock text-primary"></i> Recent Bookings</h5>
+                        <a asp-action="Bookings" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Property</th>
+                                        <th>User</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var booking in Model.Take(5))
+                                    {
+                                        <tr>
+                                            <td><strong>#@booking.BookingId</strong></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(booking.Property.MainImage))
+                                                    {
+                                                        <img src="@booking.Property.MainImage" class="rounded me-2"
+                                                             style="width: 40px; height: 40px; object-fit: cover;" alt="Property">
+                                                    }
+                                                    <span class="small">@booking.Property.Title</span>
+                                                </div>
+                                            </td>
+                                            <td>@booking.User.FullName</td>
+                                            <td>@booking.BookingDate.ToString("MM/dd/yyyy")</td>
+                                <td>@booking.BookingTime</td>
+                                            <td>
+                                                <span class="badge bg-@(booking.Status == "Confirmed" ? "success" : booking.Status == "Pending" ? "warning" : "danger")">
+                                                    @booking.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-action="ViewBooking" asp-route-id="@booking.BookingId" class="btn btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-success me-1 booking-status-btn" data-id="@booking.BookingId" data-status="Confirmed" data-bs-toggle="tooltip" title="Confirm Booking">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted py-4">No recent bookings</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- System Overview -->
+        <div class="col-xl-4 mb-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="fas fa-chart-pie"></i> Property Statistics</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span><i class="fas fa-home text-primary"></i> Houses</span>
+                        <strong>@ViewBag.HousesCount</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span><i class="fas fa-building text-success"></i> Apartments</span>
+                        <strong>@ViewBag.ApartmentsCount</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span><i class="fas fa-crown text-warning"></i> Villas</span>
+                        <strong>@ViewBag.VillasCount</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span><i class="fas fa-briefcase text-info"></i> Commercial</span>
+                        <strong>@ViewBag.CommercialCount</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span><i class="fas fa-map text-danger"></i> Land</span>
+                        <strong>@ViewBag.LandCount</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="fas fa-dollar-sign"></i> Quick Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Featured Properties</small>
+                        <h4 class="fw-bold">@ViewBag.FeaturedCount</h4>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Total Views</small>
+                        <h4 class="fw-bold">@ViewBag.TotalViews</h4>
+                    </div>
+                    <div>
+                        <small class="text-muted">Active Users Today</small>
+                        <h4 class="fw-bold">@ViewBag.ActiveUsersToday</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .welcome-banner-admin {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .admin-stat-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .admin-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3) !important;
+        }
+
+    .admin-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .quick-action-btn {
+        display: block;
+        text-align: center;
+        padding: 30px 15px;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: #495057;
+    }
+
+        .quick-action-btn:hover {
+            border-color: #0d6efd;
+            background: rgba(13, 110, 253, 0.05);
+            color: #0d6efd;
+            transform: translateY(-3px);
+        }
+</style>

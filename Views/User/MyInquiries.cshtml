@@ -1,0 +1,161 @@
+﻿@model IEnumerable<RealEstateManagementSystem.Models.Inquiry>
+@{
+    ViewData["Title"] = "My Inquiries";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold"><i class="fas fa-comments text-success"></i> My Inquiries</h2>
+            <p class="text-muted">View all your inquiries and responses</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-controller="Home" asp-action="Contact" class="btn btn-success">
+                <i class="fas fa-plus"></i> New Inquiry
+            </a>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var inquiry in Model)
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="card inquiry-card h-100 shadow-sm">
+                        <div class="card-header bg-white border-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    @if (inquiry.Property != null)
+                                    {
+                                        <h6 class="fw-bold mb-1">
+                                            <i class="fas fa-home text-primary"></i> @inquiry.Property.Title
+                                        </h6>
+                                        <small class="text-muted">Property Inquiry</small>
+                                    }
+                                    else
+                                    {
+                                        <h6 class="fw-bold mb-1">
+                                            <i class="fas fa-envelope text-info"></i> General Inquiry
+                                        </h6>
+                                        <small class="text-muted">Contact Form</small>
+                                    }
+                                </div>
+                                <span class="badge bg-@(inquiry.Status == "Replied" ? "success" : inquiry.Status == "Read" ? "info" : "secondary")">
+                                    @inquiry.Status
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="far fa-clock"></i> @inquiry.CreatedAt.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+                                </small>
+                            </div>
+
+                            <div class="inquiry-message mb-3 p-3 bg-light rounded">
+                                <small class="text-muted d-block mb-2"><strong>Your Message:</strong></small>
+                                <p class="mb-0">@inquiry.Message</p>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(inquiry.AdminReply))
+                            {
+                                <div class="admin-reply p-3 bg-success bg-opacity-10 border border-success rounded">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <div class="flex-shrink-0">
+                                            <div class="admin-avatar">
+                                                <i class="fas fa-user-tie"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <strong class="text-success">Admin Reply</strong>
+                                            <small class="text-muted d-block">
+                                                @inquiry.RepliedAt?.ToString("MMM dd, yyyy")
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">@inquiry.AdminReply</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info small mb-0">
+                                    <i class="fas fa-info-circle"></i> Waiting for admin response...
+                                </div>
+                            }
+                        </div>
+                        @if (inquiry.Property != null)
+                        {
+                            <div class="card-footer bg-white border-0">
+                                <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@inquiry.PropertyId"
+                                   class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="fas fa-eye"></i> View Property
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400"
+                     alt="No inquiries" class="img-fluid mb-4 rounded" style="max-width: 300px;">
+                <h4 class="fw-bold mb-3">No Inquiries Yet</h4>
+                <p class="text-muted mb-4">Have questions? Send us an inquiry and we'll get back to you!</p>
+                <a asp-controller="Home" asp-action="Contact" class="btn btn-success btn-lg me-2">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a asp-controller="Home" asp-action="Properties" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .inquiry-card {
+        transition: all 0.3s ease;
+        border-top: 4px solid transparent;
+    }
+
+        .inquiry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+            border-top-color: #0d6efd;
+        }
+
+    .inquiry-message {
+        border-left: 3px solid #0d6efd;
+    }
+
+    .admin-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .admin-reply {
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

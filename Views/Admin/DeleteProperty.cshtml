@@ -1,0 +1,62 @@
+@model RealEstateManagementSystem.Models.Property
+
+@{
+    ViewData["Title"] = "Delete Property";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Delete Property</h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4>Are you sure you want to delete this property?</h4>
+                <p>This action cannot be undone. All related bookings and inquiries will also be deleted.</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@Model.Title</dd>
+                        
+                        <dt class="col-sm-4">Property Type</dt>
+                        <dd class="col-sm-8">@Model.PropertyType</dd>
+                        
+                        <dt class="col-sm-4">Listing Type</dt>
+                        <dd class="col-sm-8">@Model.ListingType</dd>
+                        
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">$@Model.Price.ToString("N2")</dd>
+                        
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">@Model.Status</dd>
+                        
+                        <dt class="col-sm-4">Address</dt>
+                        <dd class="col-sm-8">@Model.Address, @Model.City, @Model.State @Model.ZipCode</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    @if (!string.IsNullOrEmpty(Model.MainImage))
+                    {
+                        <img src="@Model.MainImage" alt="@Model.Title" class="img-fluid" style="max-height: 200px;" />
+                    }
+                    else
+                    {
+                        <img src="/images/properties/default-property.jpg" alt="Default Property Image" class="img-fluid" style="max-height: 200px;" />
+                    }
+                </div>
+            </div>
+            
+            <form asp-action="DeleteProperty" method="post">
+                <input type="hidden" asp-for="PropertyId" />
+                <div class="form-group mt-4">
+                    <a asp-action="Properties" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

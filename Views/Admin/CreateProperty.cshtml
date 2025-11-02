@@ -1,0 +1,312 @@
+@model Property
+
+@{
+    ViewData["Title"] = "Create Property";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Create New Property</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="Properties">Properties</a></li>
+        <li class="breadcrumb-item active">Create Property</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-home me-1"></i>
+                Property Details
+            </div>
+            <a asp-action="Properties" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Properties
+            </a>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateProperty" method="post" enctype="multipart/form-data" id="propertyForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PropertyType" class="control-label"></label>
+                            <select asp-for="PropertyType" class="form-control" id="propertyType" required>
+                                <option value="">Select Property Type</option>
+                                <option value="House">House</option>
+                                <option value="Apartment">Apartment</option>
+                                <option value="Villa">Villa</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Land">Land</option>
+                            </select>
+                            <span asp-validation-for="PropertyType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input asp-for="Price" class="form-control" id="priceInput" required />
+                            </div>
+                            <small class="form-text text-muted">Price in Indian Rupees (₹)</small>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            <select asp-for="Status" class="form-control" required>
+                                <option value="">Select Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Sold">Sold</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Bedrooms" class="control-label"></label>
+                            <input asp-for="Bedrooms" class="form-control" type="number" min="0" id="bedroomsInput" />
+                            <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Bathrooms" class="control-label"></label>
+                            <input asp-for="Bathrooms" class="form-control" type="number" min="0" step="0.5" id="bathroomsInput" />
+                            <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-3">
+                            <label asp-for="SquareFeet" class="form-label">Area (sq.ft)</label>
+                                    <div class="input-group">
+                                        <input asp-for="SquareFeet" class="form-control" type="number" min="0" required />
+                                        <span class="input-group-text">sq.ft</span>
+                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="YearBuilt" class="control-label"></label>
+                            <input asp-for="YearBuilt" class="form-control" type="number" min="1900" max="@DateTime.Now.Year" id="yearBuiltInput" />
+                            <span asp-validation-for="YearBuilt" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-map-marker-alt me-1"></i> Location Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="Address" class="control-label"></label>
+                                    <input asp-for="Address" class="form-control" required />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="City" class="control-label"></label>
+                                    <input asp-for="City" class="form-control" required />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="State" class="control-label"></label>
+                                    <select asp-for="State" class="form-control" required>
+                                        <option value="">Select State</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                    </select>
+                                    <span asp-validation-for="State" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="ZipCode" class="control-label"></label>
+                                    <input asp-for="ZipCode" class="form-control" required pattern="[0-9]{6}" title="Please enter a valid 6-digit PIN code" />
+                                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-images me-1"></i> Property Images
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="MainImageFile" class="control-label">Main Image</label>
+                                    <input type="file" name="MainImageFile" id="MainImageFile" class="form-control" accept="image/*" required />
+                                    <small class="form-text text-muted">This will be the primary image shown for your property</small>
+                                </div>
+                                <div class="mt-2" id="mainImagePreview"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="AdditionalImageFiles" class="control-label">Additional Images</label>
+                                    <input type="file" name="AdditionalImageFiles" id="AdditionalImageFiles" class="form-control" accept="image/*" multiple />
+                                    <small class="form-text text-muted">You can select multiple images (up to 5)</small>
+                                </div>
+                                <div class="mt-2" id="additionalImagesPreview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-cog me-1"></i> Additional Settings
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input asp-for="IsFeatured" class="form-check-input" />
+                                    <label asp-for="IsFeatured" class="form-check-label">Feature this property on homepage</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input type="checkbox" id="hasParking" class="form-check-input" />
+                                    <label for="hasParking" class="form-check-label">Has Parking</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input type="checkbox" id="hasSecurity" class="form-check-input" />
+                                    <label for="hasSecurity" class="form-check-label">24/7 Security</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center mt-4">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-save me-1"></i> Create Property
+                    </button>
+                    <a asp-action="Properties" class="btn btn-secondary px-4 ms-2">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Property type dependent fields
+            $('#propertyType').change(function() {
+                var type = $(this).val();
+                if (type === 'Land') {
+                    $('#bedroomsInput').val(0).prop('disabled', true);
+                    $('#bathroomsInput').val(0).prop('disabled', true);
+                    $('#yearBuiltInput').val('').prop('disabled', true);
+                } else {
+                    $('#bedroomsInput').prop('disabled', false);
+                    $('#bathroomsInput').prop('disabled', false);
+                    $('#yearBuiltInput').prop('disabled', false);
+                }
+            });
+            
+            // Image preview for main image
+            $('#MainImageFile').change(function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#mainImagePreview').html('<img src="' + e.target.result + '" class="img-thumbnail" style="max-height: 200px;">');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#mainImagePreview').html('');
+                }
+            });
+            
+            // Image preview for additional images
+            $('#AdditionalImageFiles').change(function() {
+                var files = this.files;
+                var preview = $('#additionalImagesPreview');
+                preview.html('');
+                
+                if (files.length > 5) {
+                    alert('You can only upload a maximum of 5 additional images.');
+                    $(this).val('');
+                    return;
+                }
+                
+                if (files.length > 0) {
+                    preview.append('<div class="d-flex flex-wrap gap-2"></div>');
+                    var container = preview.find('div');
+                    
+                    for (var i = 0; i < files.length; i++) {
+                        (function(file) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                container.append('<img src="' + e.target.result + '" class="img-thumbnail" style="max-height: 100px; max-width: 100px;">');
+                            }
+                            reader.readAsDataURL(file);
+                        })(files[i]);
+                    }
+                }
+            });
+            
+            // Form validation
+            $('#propertyForm').submit(function(e) {
+                var price = $('#priceInput').val();
+                if (price <= 0) {
+                    alert('Price must be greater than zero.');
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

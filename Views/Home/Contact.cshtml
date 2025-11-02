@@ -1,0 +1,454 @@
+﻿@model RealEstateManagementSystem.Models.Inquiry
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<!-- Hero Section -->
+<section class="contact-hero">
+    <div class="hero-overlay">
+        <div class="container text-center text-white">
+            <h1 class="display-3 fw-bold mb-3">Get In Touch</h1>
+            <p class="lead">We'd love to hear from you. Send us a message!</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info Cards -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card contact-info-card h-100 shadow-sm text-center">
+                    <div class="card-body">
+                        <div class="icon-box bg-primary text-white mb-3">
+                            <i class="fas fa-phone fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Call Us</h5>
+                        <p class="text-muted mb-2">Mon-Sat: 9AM - 7PM</p>
+                        <a href="tel:+911234567890" class="text-primary fw-bold">+91 123-456-7890</a><br>
+                        <a href="tel:+911800123456" class="text-primary fw-bold">+91 1800-123-456</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card contact-info-card h-100 shadow-sm text-center">
+                    <div class="card-body">
+                        <div class="icon-box bg-success text-white mb-3">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Email Us</h5>
+                        <p class="text-muted mb-2">24/7 Support Available</p>
+                        <a href="mailto:info@realestatepro.com" class="text-success fw-bold">info@realestatepro.com</a><br>
+                        <a href="mailto:support@realestatepro.com" class="text-success fw-bold">support@realestatepro.com</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card contact-info-card h-100 shadow-sm text-center">
+                    <div class="card-body">
+                        <div class="icon-box bg-warning text-white mb-3">
+                            <i class="fas fa-map-marker-alt fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Visit Us</h5>
+                        <p class="text-muted mb-2">Head Office</p>
+                        <p class="fw-bold mb-0">
+                            123, Real Estate Tower<br>
+                            MG Road, Rajkot<br>
+                            Gujarat - 360001, India
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form & Map -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Form -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-paper-plane"></i> Send Us a Message</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form asp-action="Contact" method="post" id="contactForm">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label fw-bold">
+                                    <i class="fas fa-user text-primary"></i> Full Name *
+                                </label>
+                                <input asp-for="Name" class="form-control form-control-lg"
+                                       placeholder="Enter your full name" required>
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label fw-bold">
+                                    <i class="fas fa-envelope text-primary"></i> Email Address *
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control form-control-lg"
+                                       placeholder="your.email@example.com" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">
+                                    <i class="fas fa-phone text-primary"></i> Phone Number
+                                </label>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg"
+                                       placeholder="+91 1234567890">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Message" class="form-label fw-bold">
+                                    <i class="fas fa-comment-dots text-primary"></i> Your Message *
+                                </label>
+                                <textarea asp-for="Message" class="form-control" rows="5"
+                                          placeholder="Tell us how we can help you..." required></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold mb-3">Connect With Us</h5>
+                        <div class="social-links">
+                            <a href="#" class="btn btn-outline-primary btn-lg me-2 mb-2">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-info btn-lg me-2 mb-2">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-danger btn-lg me-2 mb-2">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg me-2 mb-2">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-success btn-lg mb-2">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Map of India -->
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fas fa-map-marked-alt"></i> Our Locations Across India</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Google Maps Embedded - India -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.7275619654896!2d70.78036831495652!3d22.303566485309924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3959c98ac71cdf0f%3A0x76dd15cfbc89ed2b!2sRajkot%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                                width="100%"
+                                height="550"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Office Hours -->
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-clock text-primary"></i> Office Hours</h5>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-2"><strong>Monday - Friday:</strong></p>
+                                <p class="mb-2"><strong>Saturday:</strong></p>
+                                <p class="mb-0"><strong>Sunday:</strong></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="mb-2">9:00 AM - 7:00 PM</p>
+                                <p class="mb-2">10:00 AM - 5:00 PM</p>
+                                <p class="mb-0 text-danger">Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Offices -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Our Branch Offices</h2>
+            <p class="lead text-muted">Visit us at any of our locations across India</p>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card office-card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="icon-circle bg-primary text-white mb-3">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Mumbai</h5>
+                        <p class="text-muted small mb-2">Maharashtra</p>
+                        <p class="small">
+                            456, Business Hub<br>
+                            Andheri East<br>
+                            Mumbai - 400069
+                        </p>
+                        <a href="tel:+912212345678" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-phone"></i> Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card office-card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="icon-circle bg-success text-white mb-3">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Delhi</h5>
+                        <p class="text-muted small mb-2">National Capital</p>
+                        <p class="small">
+                            789, Corporate Tower<br>
+                            Connaught Place<br>
+                            New Delhi - 110001
+                        </p>
+                        <a href="tel:+911112345678" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-phone"></i> Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card office-card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="icon-circle bg-warning text-white mb-3">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Bangalore</h5>
+                        <p class="text-muted small mb-2">Karnataka</p>
+                        <p class="small">
+                            321, Tech Park<br>
+                            Whitefield<br>
+                            Bangalore - 560066
+                        </p>
+                        <a href="tel:+918012345678" class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-phone"></i> Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card office-card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="icon-circle bg-info text-white mb-3">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h5 class="fw-bold">Ahmedabad</h5>
+                        <p class="text-muted small mb-2">Gujarat</p>
+                        <p class="small">
+                            654, Trade Center<br>
+                            CG Road<br>
+                            Ahmedabad - 380009
+                        </p>
+                        <a href="tel:+917912345678" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-phone"></i> Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Frequently Asked Questions</h2>
+            <p class="lead text-muted">Quick answers to common questions</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item mb-3 border-0 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I list my property?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Simply register as a user, then contact our admin team. We'll guide you through the property listing process and help showcase your property to thousands of potential buyers.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item mb-3 border-0 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What are your service charges?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our service charges vary based on property type and services required. Contact us for a detailed quote. We offer competitive rates with transparent pricing.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item mb-3 border-0 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How can I schedule a property visit?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can book a property visit directly through our website. Just click "Book a Visit" on any property listing, choose your preferred date and time, and we'll confirm your appointment.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item mb-3 border-0 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Do you provide home loan assistance?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! We partner with leading banks and financial institutions to help you secure the best home loan deals. Our advisors will assist you throughout the loan process.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Form submission animation
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            button.disabled = true;
+        });
+    </script>
+}
+
+<style>
+    .contact-hero {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920') center/cover;
+        height: 350px;
+        display: flex;
+        align-items: center;
+    }
+
+    .contact-info-card {
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .contact-info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+        }
+
+    .icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .office-card {
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .office-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+
+    .social-links a {
+        transition: all 0.3s ease;
+    }
+
+        .social-links a:hover {
+            transform: scale(1.1);
+        }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    iframe {
+        filter: grayscale(0);
+        transition: all 0.3s ease;
+    }
+
+        iframe:hover {
+            filter: grayscale(0) brightness(1.1);
+        }
+
+
+
+
+    /* Ensure contact form and map cards are equal height */
+    @@media (min-width: 992px) {
+        .row > .col-lg-6
+
+    {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .col-lg-6 .card.shadow-lg.border-0.h-100 {
+        height: 100%;
+    }
+
+    .col-lg-6.mb-4 {
+        display: flex;
+        flex-direction: column;
+    }
+
+        /* Make both main cards equal height */
+        .col-lg-6.mb-4 .card,
+        .col-lg-6 .card.shadow-lg.border-0.h-100 {
+            flex: 1;
+        }
+
+    }
+</style>

@@ -1,0 +1,233 @@
+﻿@model IEnumerable<RealEstateManagementSystem.Models.Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold"><i class="fas fa-calendar-check text-primary"></i> My Bookings</h2>
+            <p class="text-muted">Manage all your property visit bookings</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-controller="Home" asp-action="Properties" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Book New Visit
+            </a>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Filter Tabs -->
+        <ul class="nav nav-pills mb-4" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-filter="all">
+                    All (@Model.Count())
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-filter="Pending">
+                    Pending (@Model.Count(b => b.Status == "Pending"))
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-filter="Confirmed">
+                    Confirmed (@Model.Count(b => b.Status == "Confirmed"))
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-filter="Cancelled">
+                    Cancelled (@Model.Count(b => b.Status == "Cancelled"))
+                </button>
+            </li>
+        </ul>
+
+        <!-- Bookings List -->
+        @foreach (var booking in Model)
+        {
+            <div class="card booking-card shadow-sm mb-3" data-status="@booking.Status">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            @if (!string.IsNullOrEmpty(booking.Property.MainImage))
+                            {
+                                <img src="@booking.Property.MainImage" alt="@booking.Property.Title"
+                                     class="img-fluid rounded booking-property-image">
+                            }
+                            else
+                            {
+                                <div class="placeholder-booking-image">
+                                    <i class="fas fa-home fa-3x text-muted"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-2">@booking.Property.Title</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt"></i> @booking.Property.Address, @booking.Property.City
+                            </p>
+                            <div class="mb-2">
+                                <span class="badge bg-primary me-2">
+                                    <i class="far fa-calendar"></i> @booking.BookingDate.ToString("MMM dd, yyyy")
+                                </span>
+                                <span class="badge bg-info">
+                                    <i class="far fa-clock"></i> @booking.BookingTime
+                                </span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(booking.Message))
+                            {
+                                <p class="small text-muted mb-1">
+                                    <strong>Your Message:</strong> @booking.Message
+                                </p>
+                            }
+                            @if (!string.IsNullOrEmpty(booking.AdminNotes))
+                            {
+                                <div class="alert alert-info small mb-0 mt-2">
+                                    <strong><i class="fas fa-info-circle"></i> Admin Note:</strong> @booking.AdminNotes
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-3 text-end">
+                            @if (booking.Status == "Confirmed")
+                            {
+                                <span class="badge bg-success mb-3 p-2">@booking.Status</span>
+                            }
+                            else if (booking.Status == "Pending")
+                            {
+                                <span class="badge bg-warning mb-3 p-2">@booking.Status</span>
+                            }
+                            else if (booking.Status == "Cancelled")
+                            {
+                                <span class="badge bg-danger mb-3 p-2">@booking.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary mb-3 p-2">@booking.Status</span>
+                            }
+
+                            <div class="d-grid gap-2">
+                                <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@booking.PropertyId"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View Property
+                                </a>
+                                @if (booking.Status == "Pending")
+                                {
+                                    <button class="btn btn-sm btn-danger" onclick="cancelBooking(@booking.BookingId)">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                }
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                Booked: @booking.CreatedAt.ToString("MMM dd, yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400"
+                     alt="No bookings" class="img-fluid mb-4 rounded" style="max-width: 300px;">
+                <h4 class="fw-bold mb-3">No Bookings Yet</h4>
+                <p class="text-muted mb-4">Start exploring properties and book your first visit!</p>
+                <a asp-controller="Home" asp-action="Properties" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('[data-filter]');
+            const bookingCards = document.querySelectorAll('.booking-card');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Filter cards
+                    bookingCards.forEach(card => {
+                        const status = card.getAttribute('data-status');
+                        if (filter === 'all' || status === filter) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch('/User/CancelBooking/' + bookingId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Failed to cancel booking');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            }
+        }
+    </script>
+}
+
+<style>
+    .booking-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+
+    .booking-property-image {
+        height: 150px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-booking-image {
+        height: 150px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .nav-pills .nav-link {
+        color: #6c757d;
+        cursor: pointer;
+    }
+
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+        }
+</style>

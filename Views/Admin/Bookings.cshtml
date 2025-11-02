@@ -1,0 +1,324 @@
+@model IEnumerable<RealEstateManagementSystem.Models.Booking>
+@{
+    ViewData["Title"] = "Manage Bookings";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold"><i class="fas fa-calendar-check text-warning"></i> Manage Bookings</h2>
+            <p class="text-muted">Review and manage all property booking requests</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group">
+                <button class="btn btn-outline-primary active" data-filter="all">All (@Model.Count())</button>
+                <button class="btn btn-outline-warning" data-filter="Pending">Pending (@Model.Count(b => b.Status == "Pending"))</button>
+                <button class="btn btn-outline-success" data-filter="Confirmed">Confirmed (@Model.Count(b => b.Status == "Confirmed"))</button>
+                <button class="btn btn-outline-danger" data-filter="Cancelled">Cancelled (@Model.Count(b => b.Status == "Cancelled"))</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6>Pending Requests</h6>
+                    <h2 class="mb-0">@Model.Count(b => b.Status == "Pending")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Confirmed</h6>
+                    <h2 class="mb-0">@Model.Count(b => b.Status == "Confirmed")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6>Completed</h6>
+                    <h2 class="mb-0">@Model.Count(b => b.Status == "Completed")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6>Cancelled</h6>
+                    <h2 class="mb-0">@Model.Count(b => b.Status == "Cancelled")</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="bookingsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Property</th>
+                                <th>Customer</th>
+                                <th>Booking Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Request Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model.OrderByDescending(b => b.CreatedAt))
+                            {
+                                <tr class="booking-row" data-status="@booking.Status">
+                                    <td><strong>#@booking.BookingId</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(booking.Property.MainImage))
+                                            {
+                                                <img src="@booking.Property.MainImage" alt="Property"
+                                                     class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-primary text-white rounded me-2 d-flex align-items-center justify-content-center"
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-home"></i>
+                                                </div>
+                                            }
+                                            <div>
+                                                <div class="fw-bold">@booking.Property.Title</div>
+                                                <small class="text-muted">@booking.Property.City</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div class="fw-bold">@booking.User.FullName</div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-envelope"></i> @booking.User.Email<br>
+                                                @if (!string.IsNullOrEmpty(booking.User.PhoneNumber))
+                                                {
+                                                    <i class="fas fa-phone"></i>
+                                                    <text>@booking.User.PhoneNumber</text>
+                                                }
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            @booking.BookingDate.ToString("MMM dd, yyyy")
+                                        </span>
+                                    </td>
+                                    <td><strong>@booking.BookingTime</strong></td>
+                                    <td>
+                                        <span class="badge bg-@(booking.Status == "Confirmed" ? "success" : booking.Status == "Pending" ? "warning" : booking.Status == "Cancelled" ? "danger" : "info")">
+                                            @booking.Status
+                                        </span>
+                                    </td>
+                                    <td>@booking.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewDetails(@booking.BookingId, '@booking.Property.Title', '@booking.User.FullName', '@booking.User.Email', '@booking.BookingDate.ToString("MMM dd, yyyy")', '@booking.BookingTime', '@booking.Message', '@booking.AdminNotes', '@booking.Status')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        @if (booking.Status == "Pending")
+                                        {
+                                            <button class="btn btn-sm btn-success" onclick="updateStatus(@booking.BookingId, 'Confirmed')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="updateStatus(@booking.BookingId, 'Cancelled')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        }
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteBooking(@booking.BookingId)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                    <h5>No bookings yet</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-info-circle"></i> Booking Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Property</label>
+                        <p id="modalProperty"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Customer Name</label>
+                        <p id="modalCustomer"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Email</label>
+                        <p id="modalEmail"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Booking Date</label>
+                        <p id="modalDate"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Time</label>
+                        <p id="modalTime"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold text-muted">Status</label>
+                        <p><span id="modalStatus"></span></p>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-bold text-muted">Customer Message</label>
+                        <p id="modalMessage" class="bg-light p-3 rounded"></p>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-bold text-muted">Admin Notes</label>
+                        <textarea class="form-control" id="modalAdminNotes" rows="3" placeholder="Add notes for this booking..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <input type="hidden" id="modalBookingId">
+                        <button class="btn btn-success me-2" onclick="updateBookingFromModal('Confirmed')">
+                            <i class="fas fa-check"></i> Confirm
+                        </button>
+                        <button class="btn btn-info me-2" onclick="updateBookingFromModal('Completed')">
+                            <i class="fas fa-check-double"></i> Mark Completed
+                        </button>
+                        <button class="btn btn-danger" onclick="updateBookingFromModal('Cancelled')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Filter buttons
+        document.querySelectorAll('[data-filter]').forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                // Update active button
+                document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter rows
+                document.querySelectorAll('.booking-row').forEach(row => {
+                    if (filter === 'all' || row.getAttribute('data-status') === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        function viewDetails(id, property, customer, email, date, time, message, notes, status) {
+            document.getElementById('modalBookingId').value = id;
+            document.getElementById('modalProperty').textContent = property;
+            document.getElementById('modalCustomer').textContent = customer;
+            document.getElementById('modalEmail').textContent = email;
+            document.getElementById('modalDate').textContent = date;
+            document.getElementById('modalTime').textContent = time;
+            document.getElementById('modalMessage').textContent = message || 'No message provided';
+            document.getElementById('modalAdminNotes').value = notes || '';
+
+            const statusBadge = document.getElementById('modalStatus');
+            const statusClass = status === 'Confirmed' ? 'success' : status === 'Pending' ? 'warning' : status === 'Cancelled' ? 'danger' : 'info';
+            statusBadge.className = 'badge bg-' + statusClass;
+            statusBadge.textContent = status;
+
+            new bootstrap.Modal(document.getElementById('bookingModal')).show();
+        }
+
+        function updateStatus(bookingId, status) {
+            if (confirm('Are you sure you want to ' + status.toLowerCase() + ' this booking?')) {
+                updateBooking(bookingId, status, '');
+            }
+        }
+
+        function updateBookingFromModal(status) {
+            const bookingId = document.getElementById('modalBookingId').value;
+            const adminNotes = document.getElementById('modalAdminNotes').value;
+
+            updateBooking(bookingId, status, adminNotes);
+        }
+
+        function updateBooking(bookingId, status, adminNotes) {
+            fetch('/Admin/UpdateBookingStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: bookingId,
+                    status: status,
+                    adminNotes: adminNotes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Booking updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to update booking');
+                }
+            });
+        }
+
+        function deleteBooking(bookingId) {
+            if (!confirm('Delete booking #' + bookingId + '? This cannot be undone.')) return;
+
+            fetch('/Admin/DeleteBooking/' + bookingId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Booking deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Failed to delete booking');
+                }
+            });
+        }
+    </script>
+}
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,0.02);
+        cursor: pointer;
+    }
+</style>

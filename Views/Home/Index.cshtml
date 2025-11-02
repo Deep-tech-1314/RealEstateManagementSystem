@@ -1,0 +1,988 @@
+@model IEnumerable<RealEstateManagementSystem.Models.Property>
+@using RealEstateManagementSystem.Services
+@{
+    ViewData["Title"] = "Home";
+    var houses = Model?.Where(p => p.PropertyType == "House").Take(3).ToList() ?? new List<RealEstateManagementSystem.Models.Property>();
+    var apartments = Model?.Where(p => p.PropertyType == "Apartment").Take(3).ToList() ?? new List<RealEstateManagementSystem.Models.Property>();
+    var villas = Model?.Where(p => p.PropertyType == "Villa").Take(3).ToList() ?? new List<RealEstateManagementSystem.Models.Property>();
+    var commercial = Model?.Where(p => p.PropertyType == "Commercial").Take(3).ToList() ?? new List<RealEstateManagementSystem.Models.Property>();
+    var land = Model?.Where(p => p.PropertyType == "Land").Take(3).ToList() ?? new List<RealEstateManagementSystem.Models.Property>();
+}
+
+<!-- Hero Section with Carousel -->
+<section class="carousel-section">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            <!-- Static Hero Image First -->
+            <div class="carousel-item active">
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1400" class="d-block w-100 carousel-img" alt="Cozy Modern Interior">
+                <div class="carousel-caption text-center">
+                    <h1 class="display-2 fw-bold mb-4 text-shadow">Find Your Dream Property</h1>
+                    <p class="lead mb-5 fs-4 text-shadow">Discover the perfect home, apartment, or commercial space</p>
+                    <a asp-controller="Home" asp-action="Properties" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg">
+                        <i class="fas fa-search me-2"></i> Browse Properties
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Dynamic Carousel Items with Catchy Headings -->
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&h=600&fit=crop" class="d-block w-100 carousel-img" alt="Explore Live Locations">
+                <div class="carousel-caption text-center">
+                    <h1 class="display-2 fw-bold mb-4 text-shadow">Explore Live Locations</h1>
+                    <p class="lead mb-5 fs-4 text-shadow">Discover properties in the most sought-after neighborhoods</p>
+                    <a asp-controller="Home" asp-action="Properties" class="btn btn-success btn-lg px-5 rounded-pill shadow-lg">
+                        <i class="fas fa-map-marker-alt me-2"></i> Find Locations
+                    </a>
+                </div>
+            </div>
+            
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=600&fit=crop" class="d-block w-100 carousel-img" alt="Luxury Living">
+                <div class="carousel-caption text-center">
+                    <h1 class="display-2 fw-bold mb-4 text-shadow">Luxury Living Awaits</h1>
+                    <p class="lead mb-5 fs-4 text-shadow">Experience the finest properties with premium amenities</p>
+                    <a asp-controller="Home" asp-action="Properties" class="btn btn-warning btn-lg px-5 rounded-pill shadow-lg">
+                        <i class="fas fa-crown me-2"></i> View Luxury Homes
+                    </a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+    </div>
+</section>
+
+<style>
+    .carousel-section {
+        margin-bottom: 2rem;
+    }
+    
+    .carousel-img {
+        height: 600px;
+        object-fit: cover;
+        filter: brightness(0.85);
+    }
+    
+    .carousel-caption {
+        bottom: 20%;
+    }
+    
+    .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    
+    .carousel-indicators {
+        bottom: 20px;
+    }
+    
+    .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 0 5px;
+    }
+</style>
+
+<script>
+    // Dynamic image loading for carousel
+    document.addEventListener('DOMContentLoaded', function() {
+        // Array of warm and aesthetic images for carousel
+        const carouselImages = [
+            // First slide is fixed as "Find Ur Dream Property"
+            "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=600&fit=crop",
+            // Images for "Explore Live Locations"
+            ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&h=600&fit=crop", 
+             "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1920&h=600&fit=crop",
+             "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=1920&h=600&fit=crop"],
+            // Images for "Luxury Living Awaits"
+            ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=600&fit=crop",
+             "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=600&fit=crop",
+             "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1920&h=600&fit=crop"]
+        ];
+        
+        // Get carousel items
+        const carouselItems = document.querySelectorAll('#heroCarousel .carousel-item');
+        
+        // Set random images for slides 2 and 3 (index 1 and 2)
+        for (let i = 1; i < carouselItems.length; i++) {
+            const imageArray = carouselImages[i];
+            const randomIndex = Math.floor(Math.random() * imageArray.length);
+            const randomImage = imageArray[randomIndex];
+            
+            const imgElement = carouselItems[i].querySelector('img');
+            if (imgElement) {
+                imgElement.src = randomImage;
+            }
+        }
+    });
+</script>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <i class="fas fa-home fa-3x text-primary mb-3"></i>
+                    <h3 class="fw-bold">500+</h3>
+                    <p class="text-muted">Properties Listed</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-3x text-success mb-3"></i>
+                    <h3 class="fw-bold">1000+</h3>
+                    <p class="text-muted">Happy Clients</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <i class="fas fa-award fa-3x text-warning mb-3"></i>
+                    <h3 class="fw-bold">50+</h3>
+                    <p class="text-muted">Awards Won</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card">
+                    <i class="fas fa-building fa-3x text-danger mb-3"></i>
+                    <h3 class="fw-bold">100+</h3>
+                    <p class="text-muted">Premium Properties</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Houses">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Houses</h5>
+                        <p class="card-text text-muted">Find your dream house with perfect amenities and location.</p>
+                        <a href="/Home/Properties?propertyType=House" class="btn btn-outline-primary">View Houses</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1612637968894-660373e23b03?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070" class="card-img-top" alt="Apartments">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Apartments</h5>
+                        <p class="card-text text-muted">Modern apartments with great facilities and security.</p>
+                        <a href="/Home/Properties?propertyType=Apartment" class="btn btn-outline-primary">View Apartments</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Villas">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Villas</h5>
+                        <p class="card-text text-muted">Luxury villas with premium features and spacious layouts.</p>
+                        <a href="/Home/Properties?propertyType=Villa" class="btn btn-outline-primary">View Villas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Commercial">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Commercial</h5>
+                        <p class="card-text text-muted">Office spaces and retail properties for your business needs.</p>
+                        <a href="/Home/Properties?propertyType=Commercial" class="btn btn-outline-primary">View Commercial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Featured Properties</h2>
+            <p class="lead text-muted">Explore our top 25 handpicked properties across all categories</p>
+        </div>
+
+        <!-- HOUSES CATEGORY -->
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold"><i class="fas fa-home text-primary"></i> Houses</h3>
+                <a asp-action="Properties" asp-route-propertyType="House" class="btn btn-outline-primary">View All Houses</a>
+            </div>
+            <div class="row g-4 justify-content-center">
+                @if (houses.Any())
+                {
+                    @foreach (var property in houses)
+                    {
+                        <div class="col-12 col-md-4 d-flex justify-content-center">
+                            <div class="card property-card h-100 shadow-sm">
+                                <div class="property-image-container">
+                                    @if (!string.IsNullOrEmpty(property.MainImage))
+                                    {
+                                        <img src="@property.MainImage" class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/properties/house-@(property.PropertyId % 5 + 1).jpg" 
+                                             class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    @if (property.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning position-absolute m-2">Featured</span>
+                                    }
+                                    <span class="badge bg-primary position-absolute m-2" style="top: 40px;">@property.ListingType</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@property.Title">@property.Title</h6>
+                                    <p class="text-muted mb-2 small">
+                                        <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                                    </p>
+                                    <h5 class="text-primary fw-bold mb-2">@CurrencyService.ConvertAndFormatPrice(property.Price)</h5>
+                                    <div class="d-flex justify-content-between text-muted small mb-2">
+                                        @if (property.Bedrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bed"></i> @property.Bedrooms</span>
+                                        }
+                                        @if (property.Bathrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bath"></i> @property.Bathrooms</span>
+                                        }
+                                        @if (property.SquareFeet.HasValue)
+                                        {
+                                            <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                                        }
+                                    </div>
+                                    <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                       class="btn btn-primary btn-sm w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No houses available at the moment.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- APARTMENTS CATEGORY -->
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold"><i class="fas fa-building text-success"></i> Apartments</h3>
+                <a asp-action="Properties" asp-route-propertyType="Apartment" class="btn btn-outline-success">View All Apartments</a>
+            </div>
+            <div class="row g-4 justify-content-center">
+                @if (apartments.Any())
+                {
+                    @foreach (var property in apartments)
+                    {
+                        <div class="col-12 col-md-4 d-flex justify-content-center">
+                            <div class="card property-card h-100 shadow-sm">
+                                <div class="property-image-container">
+                                    @if (!string.IsNullOrEmpty(property.MainImage))
+                                    {
+                                        <img src="@property.MainImage" class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/properties/apartment-@(property.PropertyId % 5 + 1).jpg" 
+                                             class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    @if (property.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning position-absolute m-2">Featured</span>
+                                    }
+                                    <span class="badge bg-success position-absolute m-2" style="top: 40px;">@property.ListingType</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@property.Title">@property.Title</h6>
+                                    <p class="text-muted mb-2 small">
+                                        <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                                    </p>
+                                    <h5 class="text-primary fw-bold mb-2">@CurrencyService.ConvertAndFormatPrice(property.Price)</h5>
+                                    <div class="d-flex justify-content-between text-muted small mb-2">
+                                        @if (property.Bedrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bed"></i> @property.Bedrooms</span>
+                                        }
+                                        @if (property.Bathrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bath"></i> @property.Bathrooms</span>
+                                        }
+                                        @if (property.SquareFeet.HasValue)
+                                        {
+                                            <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                                        }
+                                    </div>
+                                    <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                       class="btn btn-success btn-sm w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No apartments available at the moment.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- VILLAS CATEGORY -->
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold"><i class="fas fa-crown text-warning"></i> Villas</h3>
+                <a asp-action="Properties" asp-route-propertyType="Villa" class="btn btn-outline-warning">View All Villas</a>
+            </div>
+            <div class="row g-4 justify-content-center">
+                @if (villas.Any())
+                {
+                    @foreach (var property in villas)
+                    {
+                        <div class="col-12 col-md-4 d-flex justify-content-center">
+                            <div class="card property-card h-100 shadow-sm">
+                                <div class="property-image-container">
+                                    @if (!string.IsNullOrEmpty(property.MainImage))
+                                    {
+                                        <img src="@property.MainImage" class="card-img-top property-image" width="300" height="200" alt="@property.Title">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/properties/villa-@(property.PropertyId % 5 + 1).jpg" 
+                                             class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    @if (property.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning position-absolute m-2">Featured</span>
+                                    }
+                                    <span class="badge bg-warning position-absolute m-2" style="top: 40px;">@property.ListingType</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@property.Title">@property.Title</h6>
+                                    <p class="text-muted mb-2 small">
+                                        <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                                    </p>
+                                    <h5 class="text-primary fw-bold mb-2">@CurrencyService.ConvertAndFormatPrice(property.Price)</h5>
+                                    <div class="d-flex justify-content-between text-muted small mb-2">
+                                        @if (property.Bedrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bed"></i> @property.Bedrooms</span>
+                                        }
+                                        @if (property.Bathrooms.HasValue)
+                                        {
+                                            <span><i class="fas fa-bath"></i> @property.Bathrooms</span>
+                                        }
+                                        @if (property.SquareFeet.HasValue)
+                                        {
+                                            <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                                        }
+                                    </div>
+                                    <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                       class="btn btn-warning btn-sm w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No villas available at the moment.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- COMMERCIAL CATEGORY -->
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold"><i class="fas fa-briefcase text-info"></i> Commercial</h3>
+                <a asp-action="Properties" asp-route-propertyType="Commercial" class="btn btn-outline-info">View All Commercial</a>
+            </div>
+            <div class="row g-4 justify-content-center">
+                @if (commercial.Any())
+                {
+                    @foreach (var property in commercial)
+                    {
+                        <div class="col-12 col-md-4 d-flex justify-content-center">
+                            <div class="card property-card h-100 shadow-sm">
+                                <div class="property-image-container">
+                                    @if (!string.IsNullOrEmpty(property.MainImage))
+                                    {
+                                        <img src="@property.MainImage" class="card-img-top property-image" width="300" height="200" alt="@property.Title">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/properties/commercial-@(property.PropertyId % 5 + 1).jpg" 
+                                             class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    @if (property.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning position-absolute m-2">Featured</span>
+                                    }
+                                    <span class="badge bg-info position-absolute m-2" style="top: 40px;">@property.ListingType</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@property.Title">@property.Title</h6>
+                                    <p class="text-muted mb-2 small">
+                                        <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                                    </p>
+                                    <h5 class="text-primary fw-bold mb-2">@CurrencyService.ConvertAndFormatPrice(property.Price)</h5>
+                                    <div class="d-flex justify-content-between text-muted small mb-2">
+                                        @if (property.SquareFeet.HasValue)
+                                        {
+                                            <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                                        }
+                                        @if (property.ParkingSpaces != null)
+                                        {
+                                            <span><i class="fas fa-parking"></i> Parking</span>
+                                        }
+                                    </div>
+                                    <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                       class="btn btn-info btn-sm w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No commercial properties available at the moment.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- LAND CATEGORY -->
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold"><i class="fas fa-map text-danger"></i> Land</h3>
+                <a asp-action="Properties" asp-route-propertyType="Land" class="btn btn-outline-danger">View All Land</a>
+            </div>
+            <div class="row g-4 justify-content-center">
+                @if (land.Any())
+                {
+                    @foreach (var property in land)
+                    {
+                        <div class="col-12 col-md-4 d-flex justify-content-center">
+                            <div class="card property-card h-100 shadow-sm">
+                                <div class="property-image-container">
+                                    @if (!string.IsNullOrEmpty(property.MainImage))
+                                    {
+                                        <img src="@property.MainImage" class="card-img-top property-image" width="300" height="200" alt="@property.Title">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/properties/land-@(property.PropertyId % 5 + 1).jpg" 
+                                             class="card-img-top property-image" alt="@property.Title" width="300" height="200">
+                                    }
+                                    @if (property.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning position-absolute m-2">Featured</span>
+                                    }
+                                    <span class="badge bg-danger position-absolute m-2" style="top: 40px;">@property.ListingType</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate" title="@property.Title">@property.Title</h6>
+                                    <p class="text-muted mb-2 small">
+                                        <i class="fas fa-map-marker-alt"></i> @property.City, @property.State
+                                    </p>
+                                    <h5 class="text-primary fw-bold mb-2">@CurrencyService.ConvertAndFormatPrice(property.Price)</h5>
+                                    <div class="d-flex justify-content-between text-muted small mb-2">
+                                        @if (property.SquareFeet.HasValue)
+                                        {
+                                            <span><i class="fas fa-ruler"></i> @property.SquareFeet sqft</span>
+                                        }
+                                        <span><i class="fas fa-tree"></i> Land</span>
+                                    </div>
+                                    <a asp-controller="Home" asp-action="PropertyDetails" asp-route-id="@property.PropertyId"
+                                       class="btn btn-danger btn-sm w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No land available at the moment.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Home" asp-action="Properties" class="btn btn-primary btn-lg px-5">
+                View All Properties <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Explore Real Estate in Popular Indian Cities -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Explore Real Estate in Popular Indian Cities</h2>
+            <p class="lead text-muted">Find your perfect property in India's top cities</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Delhi / NCR -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/delhi.jpg" class="city-img" alt="Delhi" onerror="this.src='https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Delhi / NCR</h5>
+                        <p class="text-muted small mb-0">248,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bangalore -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/bangalore.jpg" class="city-img" alt="Bangalore" onerror="this.src='https://images.unsplash.com/photo-1596176530529-78163a4f7af2?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1227';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Bangalore</h5>
+                        <p class="text-muted small mb-0">69,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pune -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/pune.jpg" class="city-img" alt="Pune" onerror="this.src='https://plus.unsplash.com/premium_photo-1681550093390-14477e7b196a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Pune</h5>
+                        <p class="text-muted small mb-0">63,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chennai -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/chennai.jpg" class="city-img" alt="Chennai" onerror="this.src='https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Chennai</h5>
+                        <p class="text-muted small mb-0">45,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mumbai -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/mumbai.jpg" class="city-img" alt="Mumbai" onerror="this.src='https://images.unsplash.com/photo-1562979314-bee7453e911c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Mumbai</h5>
+                        <p class="text-muted small mb-0">69,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hyderabad -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/hyderabad.jpg" class="city-img" alt="Hyderabad" onerror="this.src='https://images.unsplash.com/photo-1551161242-b5af797b7233?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1151';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Hyderabad</h5>
+                        <p class="text-muted small mb-0">35,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolkata -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/kolkata.jpg" class="city-img" alt="Kolkata" onerror="this.src='https://images.unsplash.com/photo-1536421469767-80559bb6f5e1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Kolkata</h5>
+                        <p class="text-muted small mb-0">39,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ahmedabad -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="city-card">
+                    <div class="overflow-hidden">
+                        <img src="/images/cities/ahmedabad.jpg" class="city-img" alt="Ahmedabad" onerror="this.src='https://plus.unsplash.com/premium_photo-1697729749187-ec80a3f41969?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170';">
+                    </div>
+                    <div class="p-3">
+                        <h5 class="fw-bold mb-1">Ahmedabad</h5>
+                        <p class="text-muted small mb-0">32,000+ Properties</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Commercial Spaces - EXACT LAYOUT -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-2">
+            <p class="text-muted text-uppercase mb-0">COMMERCIAL SPACES</p>
+        </div>
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Choose from a wide variety of<br>commercial properties</h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Buy Commercial -->
+            <div class="col-lg-6">
+                <div class="commercial-card-exact buy-commercial-exact">
+                    <div class="commercial-content">
+                        <span class="badge bg-secondary bg-opacity-75 mb-3 px-3 py-2">BUY FOR COMMERCIAL USE</span>
+                        <h2 class="fw-bold text-white mb-3">Buy a Commercial<br>property</h2>
+                        <p class="text-white mb-4">Explore from Office Spaces, Co-working spaces,<br>Retail Shops, Land, Factories and more</p>
+                        <a asp-action="Properties" asp-route-propertyType="Commercial" asp-route-listingType="Sale"
+                           class="btn btn-primary btn-lg px-4">
+                            Explore Buying Commercial
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lease Commercial -->
+            <div class="col-lg-6">
+                <div class="commercial-card-exact lease-commercial-exact">
+                    <div class="commercial-content">
+                        <span class="badge bg-secondary bg-opacity-75 mb-3 px-3 py-2">LEASE FOR COMMERCIAL USE</span>
+                        <h2 class="fw-bold text-white mb-3">Lease a Commercial<br>property</h2>
+                        <p class="text-white mb-4">Explore from Office Spaces, Co-working spaces,<br>Retail Shops, Land, Factories and more</p>
+                        <a asp-action="Properties" asp-route-propertyType="Commercial" asp-route-listingType="Rent"
+                           class="btn btn-primary btn-lg px-4">
+                            Explore Leasing Commercial
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Property Features Carousel -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Why Choose RealEstate Pro</h2>
+            <p class="lead text-muted">Discover what makes us the best choice for your property needs</p>
+        </div>
+
+        <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="2"></button>
+                <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="3"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800"
+                                 class="d-block w-100 rounded carousel-feature-img" alt="Premium Properties">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="carousel-content">
+                                <span class="badge bg-primary mb-3">PREMIUM PROPERTIES</span>
+                                <h3 class="fw-bold mb-3">Exclusive Luxury Properties</h3>
+                                <p class="text-muted mb-4">Access to premium and luxury properties across India. From penthouses to villas, find your dream home with us.</p>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check-circle text-success"></i> Verified Property Listings</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Premium Locations</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> High-End Amenities</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Exclusive Deals</li>
+                                </ul>
+                                <a asp-action="Properties" class="btn btn-primary">Explore Premium Properties</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800"
+                                 class="d-block w-100 rounded carousel-feature-img" alt="Easy Booking">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="carousel-content">
+                                <span class="badge bg-success mb-3">EASY PROCESS</span>
+                                <h3 class="fw-bold mb-3">Seamless Property Booking</h3>
+                                <p class="text-muted mb-4">Book property visits online in just a few clicks. Our streamlined process makes finding your home hassle-free.</p>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check-circle text-success"></i> Online Booking System</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Instant Confirmations</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Flexible Visit Schedules</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Real-Time Updates</li>
+                                </ul>
+                                <a asp-action="Properties" class="btn btn-success">Book a Visit Today</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"
+                                 class="d-block w-100 rounded carousel-feature-img" alt="Expert Support">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="carousel-content">
+                                <span class="badge bg-warning mb-3">24/7 SUPPORT</span>
+                                <h3 class="fw-bold mb-3">Expert Guidance & Support</h3>
+                                <p class="text-muted mb-4">Our team of real estate experts is available round the clock to assist you with any queries or concerns.</p>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check-circle text-success"></i> Dedicated Support Team</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Professional Advisors</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Quick Response Time</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Personalized Assistance</li>
+                                </ul>
+                                <a asp-controller="Home" asp-action="Contact" class="btn btn-warning">Contact Support</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="carousel-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800"
+                                 class="d-block w-100 rounded carousel-feature-img" alt="Smart Search">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="carousel-content">
+                                <span class="badge bg-info mb-3">SMART TECHNOLOGY</span>
+                                <h3 class="fw-bold mb-3">Advanced Search & Filters</h3>
+                                <p class="text-muted mb-4">Use our powerful search tools and filters to find exactly what you're looking for in minutes.</p>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check-circle text-success"></i> AI-Powered Search</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Multiple Filter Options</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Price Range Selection</li>
+                                    <li><i class="fas fa-check-circle text-success"></i> Location-Based Results</li>
+                                </ul>
+                                <a asp-action="Properties" class="btn btn-info">Start Searching</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#featuresCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Discover The Advantages</h2>
+            <p class="lead text-muted">We’re dedicated to making your property journey seamless — offering expert guidance, verified listings, and personalized support every step of the way.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-primary text-white mb-3">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                    <h4>Wide Range of Properties</h4>
+                    <p class="text-muted">Choose from thousands of properties across the country</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-success text-white mb-3">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                    <h4>Trusted by Thousands</h4>
+                    <p class="text-muted">Join our community of satisfied customers</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-warning text-white mb-3">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h4>24/7 Customer Support</h4>
+                    <p class="text-muted">We're here to help you anytime, anywhere</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style>
+    /* Top 3 Featured Cards - 600x400 */
+    .top-property-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .top-property-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+    }
+
+    .top-property-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .top-property-placeholder {
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* City Cards - Equal Size, 4 per row */
+    .city-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: white;
+        height: 100%;
+    }
+
+    .city-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    .city-img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .city-card:hover .city-img {
+        transform: scale(1.1);
+    }
+
+    .city-info {
+        padding: 20px;
+        background: white;
+    }
+
+    /* Commercial Cards - EXACT as image */
+    .commercial-card-exact {
+        border-radius: 15px;
+        overflow: hidden;
+        position: relative;
+        height: 450px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .buy-commercial-exact {
+        background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                          url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200');
+    }
+
+    .lease-commercial-exact {
+        background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                          url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200');
+    }
+
+    .commercial-content {
+        padding: 50px;
+        width: 100%;
+    }
+    /* Force 3-per-row cards at ~416x200 while remaining responsive */
+    .property-card {
+        width: 416px;
+    }
+
+    .property-image-container {
+        height: 200px;
+        position: relative;
+    }
+
+    .property-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .placeholder-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        background-color: #f8f9fa;
+    }
+
+</style>
